@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BloodCloud - Cloud Blood Bank</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+    color:#1f2937;
+    transition:.3s;
+}
+
+body.dark{
+    background:#111827;
+    color:#f9fafb;
+}
+
+.hidden{
+    display:none!important;
+}
+
+button{
+    cursor:pointer;
+}
+
+/* AUTH */
+
+.auth{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#dc2626,#991b1b);
+}
+
+.auth-box{
+    width:400px;
+    max-width:92%;
+    background:white;
+    padding:35px;
+    border-radius:18px;
+    box-shadow:0 20px 50px rgba(0,0,0,.3);
+}
+
+.auth-box h1{
+    text-align:center;
+    color:#dc2626;
+    margin-bottom:8px;
+}
+
+.auth-box>p{
+    text-align:center;
+    color:#6b7280;
+    margin-bottom:25px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+}
+
+.password{
+    display:flex;
+}
+
+.password input{
+    border-radius:8px 0 0 8px;
+}
+
+.password button{
+    width:50px;
+    border:0;
+    border-radius:0 8px 8px 0;
+}
+
+.primary{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:8px;
+    background:#dc2626;
+    color:white;
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.primary:hover{
+    background:#b91c1c;
+}
+
+.auth-link{
+    text-align:center;
+    margin-top:18px;
+}
+
+.auth-link span{
+    color:#dc2626;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* NAVBAR */
+
+.navbar{
+    height:65px;
+    background:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 25px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.dark .navbar{
+    background:#1f2937;
+}
+
+.logo{
+    color:#dc2626;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.nav-btn{
+    border:0;
+    background:#fee2e2;
+    padding:9px 12px;
+    border-radius:8px;
+}
+
+.logout{
+    background:#dc2626;
+    color:white;
+    border:0;
+    padding:9px 15px;
+    border-radius:8px;
+}
+
+/* LAYOUT */
+
+.layout{
+    display:flex;
+    min-height:calc(100vh - 65px);
+}
+
+.sidebar{
+    width:240px;
+    background:#111827;
+    color:white;
+    padding:20px 12px;
+}
+
+.sidebar button{
+    width:100%;
+    border:0;
+    background:transparent;
+    color:#d1d5db;
+    padding:13px;
+    text-align:left;
+    border-radius:8px;
+    margin-bottom:5px;
+}
+
+.sidebar button:hover,
+.sidebar button.active{
+    background:#dc2626;
+    color:white;
+}
+
+.content{
+    flex:1;
+    padding:25px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.title{
+    margin-bottom:20px;
+}
+
+.title h2{
+    font-size:28px;
+}
+
+.title p{
+    color:#6b7280;
+    margin-top:5px;
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:white;
+    padding:22px;
+    border-radius:14px;
+    box-shadow:0 3px 12px rgba(0,0,0,.07);
+}
+
+.dark .stat,
+.dark .panel,
+.dark .blood-card{
+    background:#1f2937;
+}
+
+.stat-icon{
+    font-size:28px;
+}
+
+.stat p{
+    color:#6b7280;
+    margin-top:8px;
+}
+
+.stat h3{
+    font-size:28px;
+    margin-top:6px;
+}
+
+/* PANEL */
+
+.panel{
+    background:white;
+    padding:22px;
+    border-radius:14px;
+    margin-bottom:20px;
+    box-shadow:0 3px 12px rgba(0,0,0,.06);
+}
+
+.panel h3{
+    margin-bottom:15px;
+}
+
+/* BLOOD GROUPS */
+
+.blood-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.blood-card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.06);
+}
+
+.blood-card .group{
+    font-size:30px;
+    font-weight:bold;
+    color:#dc2626;
+}
+
+.blood-card .units{
+    font-size:24px;
+    margin-top:8px;
+}
+
+/* DONORS */
+
+.search{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    margin-bottom:20px;
+}
+
+.donor-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.blood-card h3{
+    margin:10px 0;
+}
+
+.donor-info{
+    color:#6b7280;
+    font-size:14px;
+    margin:7px 0;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    margin-top:15px;
+}
+
+.small{
+    padding:9px 12px;
+    border:0;
+    border-radius:7px;
+    background:#dc2626;
+    color:white;
+}
+
+.delete{
+    background:#374151;
+}
+
+/* FORMS */
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+/* TABLE */
+
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:13px;
+    text-align:left;
+    border-bottom:1px solid #e5e7eb;
+}
+
+th{
+    background:#f3f4f6;
+}
+
+.dark th{
+    background:#374151;
+}
+
+.badge{
+    padding:5px 9px;
+    border-radius:15px;
+    font-size:12px;
+    background:#dcfce7;
+    color:#166534;
+}
+
+/* NOTIFICATIONS */
+
+.notification{
+    padding:13px;
+    background:#fee2e2;
+    border-left:4px solid #dc2626;
+    margin-bottom:10px;
+    border-radius:6px;
+}
+
+/* PROFILE */
+
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#dc2626;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    margin-bottom:20px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1000px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .blood-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .donor-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        width:65px;
+    }
+
+    .sidebar button{
+        font-size:0;
+        text-align:center;
+    }
+
+    .content{
+        padding:15px;
+    }
+
+    .stats,
+    .blood-grid,
+    .donor-grid,
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="loginScreen" class="auth">
+
+<div class="auth-box">
+
+<h1>🩸 BloodCloud</h1>
+<p>Cloud Blood Bank Management System</p>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="loginEmail" placeholder="Enter email">
+</div>
+
+<div class="form-group">
+<label>Password</label>
+
+<div class="password">
+<input type="password" id="loginPassword" placeholder="Enter password">
+<button onclick="togglePassword('loginPassword')">👁️</button>
+</div>
+
+</div>
+
+<button class="primary" onclick="login()">Login</button>
+
+<div class="auth-link">
+Don't have an account?
+<span onclick="showSignup()">Sign Up</span>
+</div>
+
+<br>
+
+<center>
+<small>Demo: admin@bloodcloud.com / admin123</small>
+</center>
+
+</div>
+</div>
+
+
+<!-- SIGNUP -->
+
+<div id="signupScreen" class="auth hidden">
+
+<div class="auth-box">
+
+<h1>🩸 BloodCloud</h1>
+<p>Create your account</p>
+
+<div class="form-group">
+<label>Full Name</label>
+<input id="signupName" placeholder="Enter name">
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="signupEmail" placeholder="Enter email">
+</div>
+
+<div class="form-group">
+<label>Password</label>
+
+<div class="password">
+<input type="password" id="signupPassword" placeholder="Create password">
+<button onclick="togglePassword('signupPassword')">👁️</button>
+</div>
+
+</div>
+
+<button class="primary" onclick="signup()">
+Create Account
+</button>
+
+<div class="auth-link">
+Already have an account?
+<span onclick="showLogin()">Login</span>
+</div>
+
+</div>
+</div>
+
+
+<!-- APPLICATION -->
+
+<div id="application" class="hidden">
+
+<header class="navbar">
+
+<div class="logo">
+🩸 BloodCloud
+</div>
+
+<div class="nav-right">
+
+<button class="nav-btn" onclick="toggleDark()">
+🌙
+</button>
+
+<button class="nav-btn" onclick="showPage('notifications')">
+🔔
+</button>
+
+<span id="navUser">Admin</span>
+
+<button class="logout" onclick="logout()">
+Logout
+</button>
+
+</div>
+
+</header>
+
+
+<div class="layout">
+
+<aside class="sidebar">
+
+<button class="active" onclick="showPage('dashboard')">
+🏠 Dashboard
+</button>
+
+<button onclick="showPage('donors')">
+🩸 Donors
+</button>
+
+<button onclick="showPage('addDonor')">
+➕ Add Donor
+</button>
+
+<button onclick="showPage('inventory')">
+📦 Blood Inventory
+</button>
+
+<button onclick="showPage('requests')">
+🏥 Blood Requests
+</button>
+
+<button onclick="showPage('notifications')">
+🔔 Notifications
+</button>
+
+<button onclick="showPage('profile')">
+👤 Profile
+</button>
+
+<button onclick="showPage('security')">
+🔐 Security
+</button>
+
+<button onclick="showPage('admin')">
+⚙️ Admin
+</button>
+
+</aside>
+
+
+<main class="content">
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page active">
+
+<div class="title">
+<h2>Dashboard</h2>
+<p>Cloud blood bank overview.</p>
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<div class="stat-icon">🩸</div>
+<p>Total Donors</p>
+<h3 id="totalDonors">0</h3>
+</div>
+
+<div class="stat">
+<div class="stat-icon">📦</div>
+<p>Total Blood Units</p>
+<h3 id="totalUnits">0</h3>
+</div>
+
+<div class="stat">
+<div class="stat-icon">🏥</div>
+<p>Blood Requests</p>
+<h3 id="totalRequests">0</h3>
+</div>
+
+<div class="stat">
+<div class="stat-icon">👥</div>
+<p>Users</p>
+<h3 id="totalUsers">0</h3>
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h3>🩸 Blood Inventory</h3>
+
+<div id="dashboardBlood" class="blood-grid"></div>
+
+</div>
+
+
+<div class="panel">
+
+<h3>☁️ Latest Cloud Features</h3>
+
+<div class="notification">
+☁️ Cloud database synchronization enabled
+</div>
+
+<div class="notification">
+🔔 Emergency blood availability alerts
+</div>
+
+<div class="notification">
+📊 Real-time blood inventory analytics
+</div>
+
+<div class="notification">
+🔐 Secure user authentication
+</div>
+
+<div class="notification">
+📱 Mobile-friendly dashboard
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DONORS -->
+
+<section id="donors" class="page">
+
+<div class="title">
+<h2>Blood Donors</h2>
+<p>Search and manage registered donors.</p>
+</div>
+
+<input
+class="search"
+id="donorSearch"
+placeholder="🔎 Search donor name, blood group or city..."
+onkeyup="renderDonors()"
+>
+
+<div id="donorGrid" class="donor-grid"></div>
+
+</section>
+
+
+<!-- ADD DONOR -->
+
+<section id="addDonor" class="page">
+
+<div class="title">
+<h2>Add Blood Donor</h2>
+<p>Register a new donor.</p>
+</div>
+
+<div class="panel">
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Donor Name</label>
+<input id="donorName" placeholder="Full name">
+</div>
+
+<div class="form-group">
+<label>Age</label>
+<input type="number" id="donorAge">
+</div>
+
+<div class="form-group">
+<label>Blood Group</label>
+
+<select id="donorBlood">
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>O+</option>
+<option>O-</option>
+</select>
+
+</div>
+
+<div class="form-group">
+<label>Phone</label>
+<input id="donorPhone" placeholder="Phone number">
+</div>
+
+<div class="form-group">
+<label>City</label>
+<input id="donorCity" placeholder="City">
+</div>
+
+<div class="form-group">
+<label>Last Donation Date</label>
+<input type="date" id="lastDonation">
+</div>
+
+</div>
+
+<button class="primary" onclick="addDonor()">
+Register Donor
+</button>
+
+</div>
+
+</section>
+
+
+<!-- INVENTORY -->
+
+<section id="inventory" class="page">
+
+<div class="title">
+
+<h2>Blood Inventory</h2>
+
+<p>Current blood stock available.</p>
+
+</div>
+
+<div class="panel">
+
+<div id="inventoryGrid" class="blood-grid"></div>
+
+</div>
+
+</section>
+
+
+<!-- REQUESTS -->
+
+<section id="requests" class="page">
+
+<div class="title">
+
+<h2>Blood Requests</h2>
+
+<p>Manage hospital blood requests.</p>
+
+</div>
+
+<div class="panel">
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Hospital Name</label>
+<input id="hospitalName">
+</div>
+
+<div class="form-group">
+<label>Blood Group</label>
+
+<select id="requestBlood">
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>O+</option>
+<option>O-</option>
+</select>
+
+</div>
+
+<div class="form-group">
+<label>Units Required</label>
+<input type="number" id="requestUnits">
+</div>
+
+<div class="form-group">
+<label>Emergency Level</label>
+
+<select id="requestEmergency">
+<option>Normal</option>
+<option>Urgent</option>
+<option>Emergency</option>
+</select>
+
+</div>
+
+</div>
+
+<button class="primary" onclick="createRequest()">
+Submit Blood Request
+</button>
+
+</div>
+
+
+<div class="panel">
+
+<div class="table-container">
+
+<table>
+
+<thead>
+<tr>
+<th>Hospital</th>
+<th>Blood</th>
+<th>Units</th>
+<th>Priority</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody id="requestTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- NOTIFICATIONS -->
+
+<section id="notifications" class="page">
+
+<div class="title">
+
+<h2>Notifications</h2>
+
+<p>Latest system alerts.</p>
+
+</div>
+
+<div class="panel">
+
+<div class="notification">
+🚨 Emergency blood requests will appear here.
+</div>
+
+<div class="notification">
+🩸 Blood stock is monitored continuously.
+</div>
+
+<div class="notification">
+☁️ Cloud synchronization completed.
+</div>
+
+<div class="notification">
+🔐 Security system is active.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PROFILE -->
+
+<section id="profile" class="page">
+
+<div class="title">
+
+<h2>My Profile</h2>
+
+<p>Manage your account.</p>
+
+</div>
+
+<div class="panel">
+
+<div class="avatar" id="avatar">A</div>
+
+<div class="form-group">
+
+<label>Name</label>
+
+<input id="profileName">
+
+</div>
+
+<div class="form-group">
+
+<label>Email</label>
+
+<input id="profileEmail" disabled>
+
+</div>
+
+<button class="primary" onclick="updateProfile()">
+Save Profile
+</button>
+
+</div>
+
+</section>
+
+
+<!-- SECURITY -->
+
+<section id="security" class="page">
+
+<div class="title">
+
+<h2>Security</h2>
+
+<p>Manage your password and account security.</p>
+
+</div>
+
+<div class="panel">
+
+<h3>Change Password</h3>
+
+<div class="form-group">
+<label>Current Password</label>
+<input type="password" id="oldPassword">
+</div>
+
+<div class="form-group">
+<label>New Password</label>
+<input type="password" id="newPassword">
+</div>
+
+<div class="form-group">
+<label>Confirm Password</label>
+<input type="password" id="confirmPassword">
+</div>
+
+<button class="primary" onclick="changePassword()">
+Change Password
+</button>
+
+</div>
+
+<div class="panel">
+
+<h3>Security Status</h3>
+
+<div class="notification">
+🔐 Password protection: Active
+</div>
+
+<div class="notification">
+🛡️ Account session: Protected
+</div>
+
+<div class="notification">
+☁️ Cloud backup: Enabled
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ADMIN -->
+
+<section id="admin" class="page">
+
+<div class="title">
+
+<h2>Admin Dashboard</h2>
+
+<p>Blood bank administration.</p>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+<p>Registered Donors</p>
+<h3 id="adminDonors">0</h3>
+</div>
+
+<div class="stat">
+<p>Blood Units</p>
+<h3 id="adminUnits">0</h3>
+</div>
+
+<div class="stat">
+<p>Requests</p>
+<h3 id="adminRequests">0</h3>
+</div>
+
+<div class="stat">
+<p>System</p>
+<h3>🟢 Online</h3>
+</div>
+
+</div>
+
+<div class="panel">
+
+<h3>System Monitoring</h3>
+
+<div class="notification">
+☁️ Cloud Server: Online
+</div>
+
+<div class="notification">
+🗄️ Database: Connected
+</div>
+
+<div class="notification">
+🔐 Authentication: Active
+</div>
+
+<div class="notification">
+🩸 Blood Inventory: Monitoring
+</div>
+
+</div>
+
+</section>
+
+</main>
+</div>
+</div>
+
+
+<script>
+
+/* USERS */
+
+let users =
+JSON.parse(localStorage.getItem("bloodUsers")) || [
+
+{
+name:"Admin",
+email:"admin@bloodcloud.com",
+password:"admin123"
+}
+
+];
+
+
+/* DONORS */
+
+let donors =
+JSON.parse(localStorage.getItem("bloodDonors")) || [
+
+{
+id:1,
+name:"Rahul Kumar",
+age:25,
+blood:"O+",
+phone:"9876543210",
+city:"Chennai",
+last:"2026-08-15"
+},
+
+{
+id:2,
+name:"Priya Sharma",
+age:28,
+blood:"A+",
+phone:"9876501234",
+city:"Hyderabad",
+last:"2026-09-01"
+},
+
+{
+id:3,
+name:"Arun Reddy",
+age:30,
+blood:"B+",
+phone:"9988776655",
+city:"Bangalore",
+last:"2026-07-20"
+},
+
+{
+id:4,
+name:"Sneha Rao",
+age:24,
+blood:"O-",
+phone:"9123456789",
+city:"Chennai",
+last:"2026-08-10"
+}
+
+];
+
+
+/* REQUESTS */
+
+let requests =
+JSON.parse(localStorage.getItem("bloodRequests")) || [];
+
+
+/* CURRENT USER */
+
+let currentUser =
+JSON.parse(localStorage.getItem("bloodCurrentUser")) || null;
+
+
+/* BLOOD GROUPS */
+
+const groups=[
+"A+","A-","B+","B-","AB+","AB-","O+","O-"
+];
+
+
+/* SAVE */
+
+function save(){
+
+localStorage.setItem(
+"bloodUsers",
+JSON.stringify(users)
+);
+
+localStorage.setItem(
+"bloodDonors",
+JSON.stringify(donors)
+);
+
+localStorage.setItem(
+"bloodRequests",
+JSON.stringify(requests)
+);
+
+}
+
+
+/* PASSWORD */
+
+function togglePassword(id){
+
+let input=document.getElementById(id);
+
+input.type =
+input.type==="password"
+? "text"
+: "password";
+
+}
+
+
+/* AUTH */
+
+function showSignup(){
+
+document.getElementById("loginScreen")
+.classList.add("hidden");
+
+document.getElementById("signupScreen")
+.classList.remove("hidden");
+
+}
+
+
+function showLogin(){
+
+document.getElementById("signupScreen")
+.classList.add("hidden");
+
+document.getElementById("loginScreen")
+.classList.remove("hidden");
+
+}
+
+
+/* SIGNUP */
+
+function signup(){
+
+let name=
+document.getElementById("signupName")
+.value.trim();
+
+let email=
+document.getElementById("signupEmail")
+.value.trim();
+
+let password=
+document.getElementById("signupPassword")
+.value;
+
+if(!name||!email||!password){
+
+alert("Please fill all fields.");
+return;
+
+}
+
+if(password.length<6){
+
+alert("Password must contain at least 6 characters.");
+return;
+
+}
+
+if(users.some(u=>u.email===email)){
+
+alert("Email already exists.");
+return;
+
+}
+
+users.push({
+name,
+email,
+password
+});
+
+save();
+
+alert("Account created successfully!");
+
+showLogin();
+
+}
+
+
+/* LOGIN */
+
+function login(){
+
+let email=
+document.getElementById("loginEmail")
+.value.trim();
+
+let password=
+document.getElementById("loginPassword")
+.value;
+
+let user=users.find(
+u=>u.email===email &&
+u.password===password
+);
+
+if(!user){
+
+alert("Invalid email or password.");
+return;
+
+}
+
+currentUser=user;
+
+localStorage.setItem(
+"bloodCurrentUser",
+JSON.stringify(user)
+);
+
+openApp();
+
+}
+
+
+/* OPEN APP */
+
+function openApp(){
+
+document.getElementById("loginScreen")
+.classList.add("hidden");
+
+document.getElementById("signupScreen")
+.classList.add("hidden");
+
+document.getElementById("application")
+.classList.remove("hidden");
+
+document.getElementById("navUser")
+.textContent=currentUser.name;
+
+loadProfile();
+
+updateDashboard();
+
+renderDonors();
+
+renderInventory();
+
+renderRequests();
+
+}
+
+
+/* LOGOUT */
+
+function logout(){
+
+localStorage.removeItem("bloodCurrentUser");
+
+currentUser=null;
+
+document.getElementById("application")
+.classList.add("hidden");
+
+document.getElementById("loginScreen")
+.classList.remove("hidden");
+
+}
+
+
+/* PAGE */
+
+function showPage(id){
+
+document.querySelectorAll(".page")
+.forEach(p=>p.classList.remove("active"));
+
+document.getElementById(id)
+.classList.add("active");
+
+}
+
+
+/* ADD DONOR */
+
+function addDonor(){
+
+let name=
+document.getElementById("donorName").value.trim();
+
+let age=
+document.getElementById("donorAge").value;
+
+let blood=
+document.getElementById("donorBlood").value;
+
+let phone=
+document.getElementById("donorPhone").value;
+
+let city=
+document.getElementById("donorCity").value;
+
+let last=
+document.getElementById("lastDonation").value;
+
+if(!name||!age||!phone||!city){
+
+alert("Please complete all fields.");
+return;
+
+}
+
+donors.push({
+
+id:Date.now(),
+name,
+age,
+blood,
+phone,
+city,
+last
+
+});
+
+save();
+
+alert("Donor registered successfully!");
+
+document.getElementById("donorName").value="";
+document.getElementById("donorAge").value="";
+document.getElementById("donorPhone").value="";
+document.getElementById("donorCity").value="";
+document.getElementById("lastDonation").value="";
+
+renderDonors();
+
+updateDashboard();
+
+showPage("donors");
+
+}
+
+
+/* RENDER DONORS */
+
+function renderDonors(){
+
+let grid=
+document.getElementById("donorGrid");
+
+if(!grid)return;
+
+let search=
+document.getElementById("donorSearch")
+?.value.toLowerCase()||"";
+
+let filtered=
+donors.filter(d=>
+
+d.name.toLowerCase().includes(search)||
+d.blood.toLowerCase().includes(search)||
+d.city.toLowerCase().includes(search)
+
+);
+
+grid.innerHTML="";
+
+filtered.forEach(d=>{
+
+let card=document.createElement("div");
+
+card.className="blood-card";
+
+card.innerHTML=`
+
+<div class="group">
+${d.blood}
+</div>
+
+<h3>${d.name}</h3>
+
+<div class="donor-info">
+👤 Age: ${d.age}
+</div>
+
+<div class="donor-info">
+📞 ${d.phone}
+</div>
+
+<div class="donor-info">
+📍 ${d.city}
+</div>
+
+<div class="donor-info">
+🩸 Last Donation: ${d.last||"Not provided"}
+</div>
+
+<div class="actions">
+
+<button class="small"
+onclick="contactDonor('${d.phone}')">
+Contact
+</button>
+
+<button class="small delete"
+onclick="deleteDonor(${d.id})">
+Delete
+</button>
+
+</div>
+`;
+
+grid.appendChild(card);
+
+});
+
+}
+
+
+/* CONTACT */
+
+function contactDonor(phone){
+
+alert("Contact donor: "+phone);
+
+}
+
+
+/* DELETE DONOR */
+
+function deleteDonor(id){
+
+if(!confirm("Remove this donor?"))return;
+
+donors=
+donors.filter(d=>d.id!==id);
+
+save();
+
+renderDonors();
+
+renderInventory();
+
+updateDashboard();
+
+}
+
+
+/* BLOOD INVENTORY */
+
+function getBloodCount(group){
+
+return donors.filter(
+d=>d.blood===group
+).length;
+
+}
+
+
+function renderInventory(){
+
+let grid=
+document.getElementById("inventoryGrid");
+
+let dashboard=
+document.getElementById("dashboardBlood");
+
+if(!grid)return;
+
+grid.innerHTML="";
+
+if(dashboard)
+dashboard.innerHTML="";
+
+groups.forEach(group=>{
+
+let count=getBloodCount(group);
+
+let card=`
+
+<div class="blood-card">
+
+<div class="group">
+${group}
+</div>
+
+<p>Available Donors</p>
+
+<div class="units">
+${count}
+</div>
+
+</div>
+`;
+
+grid.innerHTML+=card;
+
+if(dashboard)
+dashboard.innerHTML+=card;
+
+});
+
+}
+
+
+/* REQUEST */
+
+function createRequest(){
+
+let hospital=
+document.getElementById("hospitalName")
+.value.trim();
+
+let blood=
+document.getElementById("requestBlood")
+.value;
+
+let units=
+document.getElementById("requestUnits")
+.value;
+
+let emergency=
+document.getElementById("requestEmergency")
+.value;
+
+if(!hospital||!units){
+
+alert("Please enter hospital and units.");
+return;
+
+}
+
+requests.push({
+
+id:Date.now(),
+hospital,
+blood,
+units,
+emergency,
+date:new Date().toLocaleDateString()
+
+});
+
+save();
+
+alert("Blood request submitted!");
+
+document.getElementById("hospitalName").value="";
+document.getElementById("requestUnits").value="";
+
+renderRequests();
+
+updateDashboard();
+
+}
+
+
+function renderRequests(){
+
+let table=
+document.getElementById("requestTable");
+
+if(!table)return;
+
+table.innerHTML="";
+
+requests.forEach(r=>{
+
+table.innerHTML+=`
+
+<tr>
+
+<td>${r.hospital}</td>
+
+<td>${r.blood}</td>
+
+<td>${r.units}</td>
+
+<td>
+<span class="badge">
+${r.emergency}
+</span>
+</td>
+
+<td>${r.date}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+/* DASHBOARD */
+
+function updateDashboard(){
+
+document.getElementById("totalDonors")
+.textContent=donors.length;
+
+document.getElementById("totalUsers")
+.textContent=users.length;
+
+document.getElementById("totalRequests")
+.textContent=requests.length;
+
+let total=donors.length;
+
+document.getElementById("totalUnits")
+.textContent=total;
+
+document.getElementById("adminDonors")
+.textContent=donors.length;
+
+document.getElementById("adminUnits")
+.textContent=total;
+
+document.getElementById("adminRequests")
+.textContent=requests.length;
+
+renderInventory();
+
+}
+
+
+/* PROFILE */
+
+function loadProfile(){
+
+document.getElementById("profileName")
+.value=currentUser.name;
+
+document.getElementById("profileEmail")
+.value=currentUser.email;
+
+document.getElementById("avatar")
+.textContent=
+currentUser.name.charAt(0).toUpperCase();
+
+}
+
+
+function updateProfile(){
+
+let name=
+document.getElementById("profileName")
+.value.trim();
+
+if(!name){
+
+alert("Name cannot be empty.");
+return;
+
+}
+
+let user=
+users.find(
+u=>u.email===currentUser.email
+);
+
+user.name=name;
+
+currentUser=user;
+
+localStorage.setItem(
+"bloodCurrentUser",
+JSON.stringify(user)
+);
+
+save();
+
+document.getElementById("navUser")
+.textContent=name;
+
+document.getElementById("avatar")
+.textContent=
+name.charAt(0).toUpperCase();
+
+alert("Profile updated!");
+
+}
+
+
+/* CHANGE PASSWORD */
+
+function changePassword(){
+
+let old=
+document.getElementById("oldPassword")
+.value;
+
+let newPass=
+document.getElementById("newPassword")
+.value;
+
+let confirm=
+document.getElementById("confirmPassword")
+.value;
+
+if(old!==currentUser.password){
+
+alert("Current password is incorrect.");
+return;
+
+}
+
+if(newPass.length<6){
+
+alert("Password must have at least 6 characters.");
+return;
+
+}
+
+if(newPass!==confirm){
+
+alert("Passwords do not match.");
+return;
+
+}
+
+let user=
+users.find(
+u=>u.email===currentUser.email
+);
+
+user.password=newPass;
+
+currentUser=user;
+
+save();
+
+localStorage.setItem(
+"bloodCurrentUser",
+JSON.stringify(user)
+);
+
+alert("Password changed successfully!");
+
+document.getElementById("oldPassword").value="";
+document.getElementById("newPassword").value="";
+document.getElementById("confirmPassword").value="";
+
+}
+
+
+/* DARK MODE */
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+localStorage.setItem(
+"bloodDark",
+document.body.classList.contains("dark")
+);
+
+}
+
+
+/* LOAD DARK MODE */
+
+if(localStorage.getItem("bloodDark")==="true"){
+
+document.body.classList.add("dark");
+
+}
+
+
+/* AUTO LOGIN */
+
+if(currentUser){
+
+openApp();
+
+}
+
+</script>
+
+</body>
+</html>
